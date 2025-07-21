@@ -1,0 +1,69 @@
+neo4j
+singlesignon
+exportação e sincronização com drive
+
+// noticias blogs, produtos se alguem coloca link da amzon eu coloco meu link de afiliado embutido na hora de abrir
+
+agrupamento correto de links e notas futuramente
+resumir noticias
+
+blog e noticias centralizando a web, outros apps como o qr code online
+
+falar que tem que ser no memso browser
+
+
+noticias salvas e semelhantes aos conteúdos que vc tem, pode indicar sites pro seu conteúdo e interesses também futuramente
+
+
+cupom e comparador de preco e produto a partir de links
+
+noticias salvas e semelhantes aos conteúdos que vc tem, pode indicar sites pro seu conteúdo e interesses também futuramente
+
+
+
+Como Ficaria na Interface?
+Na página de detalhes de um link salvo, abaixo da descrição e dos botões de ação, haveria uma nova seção:
+"Você também salvou:"
+
+Uma pequena lista de 2 a 4 cards de outros links da sua coleção que são semelhantes, permitindo que você redescubra conteúdos e veja conexões que talvez não lembrasse.
+
+
+
+se for de grafo e node pode mostrar o que esta pertto e da emsma cetegforia
+
+pode ter uma ordenação e categorização de cor por exemplo com multiplas visualizações, um quartes, tipo rpecisa fazer mas nao é urgente, precisa mas é urgente e por ai vai frameworks
+
+analise swat e etc
+mapa mental
+
+
+seguir framework de pasta PARA e tags etiquetas e cores e backgrounds
+
+
+fazer omponente de layout pra mudar layout por tag
+
+
+poderia separar por perfil tambem os links, pérfil de ia marketing e etc
+
+salvou link manda pra minha api e pode recuperar depois em caso de perda
+
+chanesl para descoberta e troca de conteudo
+
+
+quero integrar audiofirst, permitindo fazer busca por audio e também transcrição de texto via audio
+
+permitir abrir em sites com modo dividido tem que ser foco
+
+
+Versão 1.0 (MVP): Fundação do Repositório.
+
+Versão 1.5 (Inteligência Interna): Recomendações de conteúdo já salvo.
+
+Versão 2.0 (Descoberta Ativa): Sugestões de novos conteúdos via RSS.
+
+Versão 2.5 (Interação por Voz):
+
+
+usar calc com clamp e outros
+
+projetod e incrementar yt

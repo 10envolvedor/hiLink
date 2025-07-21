@@ -1,0 +1,99 @@
+// Este hook executa uma função (callback) quando detecta um clique
+// fora do elemento referenciado (ref).
+function useClickAway(ref, callback) {
+  React.useEffect(() => {
+    const handleClickOutside = (event) => {
+      // Se a ref existe e o clique não foi dentro dela
+      if (ref.current && !ref.current.contains(event.target)) {
+        callback(); // Executa a função de fechar
+      }
+    };
+    // Adiciona o listener
+    document.addEventListener('mousedown', handleClickOutside);
+    // Função de limpeza: remove o listener ao desmontar
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [ref, callback]);
+}
+
+function LinkWithActions({ url, children }) {
+    const { usePopper } = ReactPopper;
+  
+    // Estado para controlar a visibilidade do menu
+    const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  
+    // Refs para o Popper.js
+    const [referenceElement, setReferenceElement] = React.useState(null);
+    const [popperElement, setPopperElement] = React.useState(null);
+  
+    // Lógica do Popper para posicionar o menu
+    const { styles, attributes } = usePopper(referenceElement, popperElement, {
+      placement: 'bottom-start',
+      modifiers: [{ name: 'offset', options: { offset: [0, 8] } }],
+    });
+    
+    // Hook para fechar o menu ao clicar fora
+    const menuRef = React.useRef(null);
+    useClickAway(menuRef, () => setIsMenuOpen(false));
+  
+    // Ações
+    const handleCopy = () => {
+      navigator.clipboard.writeText(url);
+      setIsMenuOpen(false); // Fecha o menu após a ação
+    };
+  
+    return (
+      <>
+        {/* O GATILHO: Um botão estilizado como link */}
+        <button
+          type="button"
+          ref={setReferenceElement}
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          className="text-blue-600 hover:underline cursor-pointer"
+        >
+          {children} {/* O texto do link vem aqui */}
+        </button>
+  
+        {/* O MENU: Renderizado com Portal e posicionado com Popper */}
+        {isMenuOpen && ReactDOM.createPortal(
+          <div
+            ref={(node) => {
+              setPopperElement(node);
+              menuRef.current = node; // Atribui a ref para o useClickAway
+            }}
+            style={styles.popper}
+            {...attributes.popper}
+            className="bg-white rounded-md shadow-lg border text-sm z-50"
+          >
+            {/* Lista de ações dentro do menu */}
+            <ul>
+              <li>
+                <a 
+                  href={url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
+                >
+                  <i className="fa-solid fa-up-right-from-square w-6"></i>
+                  Abrir em nova aba
+                </a>
+              </li>
+              <li>
+                <button 
+                  onClick={handleCopy}
+                  className="flex items-center w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
+                >
+                  <i className="fa-solid fa-copy w-6"></i>
+                  Copiar URL
+                </button>
+              </li>
+            </ul>
+          </div>,
+          document.body
+        )}
+      </>
+    );
+  }
+
+//   pro botao de copiar aparecer idade e outros elementos seriam uteis personalizando a experiencia, ele hbauilita e poderia cobrar por isso, se fosse afiliados amazon eu poderia alterar link de produto pra mim e ganhar dinheiros

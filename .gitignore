@@ -1,0 +1,17 @@
+# Arquivo de configuração local com chaves secretas
+# NUNCA envie este arquivo para o repositório.
+config.js
+
+# Dependências
+/node_modules/
+
+# Arquivos de log
+*.log
+
+# Arquivos de sistema operacional
+.DS_Store
+Thumbs.db
+
+# Diretórios de build (boa prática)
+/build/
+/dist/
