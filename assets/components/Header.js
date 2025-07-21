@@ -5,7 +5,7 @@ function Header() {
   return (
     <header className="dark:bg-gray-800 pt-6 pb-4 px-8 flex flex-row flex-nowrap justify-between items-center">
       <div className="flex flex-row items-center content-center align-center justify-center gap-4">
-        <h1 className="text-2xl font-bold dark:text-white">hiLink</h1>
+        <h1 className="flex flex-col justify-between items-center text-2xl font-bold dark:text-white"><img src="assets/icon/hiLink.png" alt="hiLink Logo" className="w-16 h-16" /> hiLink</h1>
         <h2 className="text-gray-600 dark:text-gray-300 hidden md:block">Salve e tenha em mãos os <span className="underline">Links</span> que mais te importam.</h2>
       </div>
 

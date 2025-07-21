@@ -6,6 +6,8 @@
 
     <title>hiLink</title>
 
+    <link rel="icon" href="assets/icon/hiLink.png" />
+
     <!-- fazer seo -->
     <meta charset="UTF-8" />
     <meta name="lan" content="Free Web tutorials">
