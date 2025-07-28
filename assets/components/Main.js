@@ -153,3 +153,41 @@ function Modal({ children, onClose }) {
     </div>
   );
 }
+
+function ConfirmationModal({ content, onConfirm, onCancel }) {
+  // Foca no botão OK ao abrir para acessibilidade
+  const okButtonRef = React.useRef(null);
+  React.useEffect(() => {
+    okButtonRef.current?.focus({ preventScroll: true });
+  }, []);
+
+  if (!content) return null;
+
+  return (
+    <div
+      className="fixed inset-0 flex items-center justify-center z-60 animate-fade-in p-4"
+      style={{ backgroundColor: "rgba(0,0,0,0.7)" }}
+      onClick={onCancel}
+    >
+      <div
+        className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-xl max-w-sm w-full text-center"
+        onMouseDown={(e) => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="text-yellow-500 mb-4">
+          <i className="fa-solid fa-triangle-exclamation fa-3x"></i>
+        </div>
+        <h3 className="text-lg font-bold mb-2 dark:text-white">{content.title}</h3>
+        <p className="text-gray-600 dark:text-gray-300 mb-6">{content.text}</p>
+        <div className="flex flex-col sm:flex-row justify-center gap-4">
+          <button ref={okButtonRef} onClick={onConfirm} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+            OK
+          </button>
+          <button onClick={onCancel} className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-6 rounded focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-opacity-50">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
