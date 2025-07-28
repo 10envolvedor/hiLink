@@ -1,15 +1,18 @@
+
 function LinkCard({
   link,
-  onToggleFavorite,
   deleteLink,
-  incrementShare,
-  toggleFavorite,
+  incrementShare, // A prop onToggleFavorite foi removida daqui e centralizada em UrlItem
+  onToggleFavorite,
   incrementAccess,
   incrementCopy,
   removeTagFromLink,
+  clearLinkUpdateFlag, // <-- Nova prop
   onEditClick,
+  onShowAlert,
 }) {
   const [copied, setCopied] = React.useState(false);
+  const [isUpdated, setIsUpdated] = React.useState(false);
 
   const handleCopy = async () => {
     if (link.url) {
@@ -19,13 +22,31 @@ function LinkCard({
         setTimeout(() => setCopied(false), 1200);
         incrementCopy(link.id); // <-- registra a cópia
       } catch (e) {
-        alert("Erro ao copiar para a área de transferência.");
+        onShowAlert({
+          title: "Erro ao Copiar",
+          text: "Não foi possível copiar o link para a área de transferência.",
+        });
       }
     }
   };
 
+  // Este efeito gerencia a animação de destaque.
+  React.useEffect(() => {
+    // Se a prop 'isUpdated' do link for verdadeira...
+    if (link.isUpdated) {
+      // 1. Ativa o estado local para adicionar a classe de animação.
+      setIsUpdated(true);
+      // 2. Limpa a flag no estado global para que a animação não se repita.
+      clearLinkUpdateFlag(link.id);
+      // 3. Define um timer para remover a classe de animação após 3 segundos.
+      const timer = setTimeout(() => setIsUpdated(false), 3000);
+      return () => clearTimeout(timer); // Limpa o timer se o componente for desmontado.
+    }
+  }, [link.isUpdated, link.id, clearLinkUpdateFlag]);
+
   return (
-    <div className="min-h-44 flex-grow min-w-3/12 max-w-7/12 p-4 rounded-md flex flex-col bg-cover bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-md bg-[url('https://cdn.kimkim.com/files/a/images/0b0d435f5312aaa4ac2deabb36ed3c23b3c363ba/original-90ebc1384d9012d5623e91bb03dc37aa.jpg')]">
+    // A classe 'animate-scale' é adicionada condicionalmente para o efeito de destaque.
+    <div className={`animate-fade-in basis-auto gap-2 min-h-44 flex-grow flex-shrink md:min-w-[30%] lg:min-w-[25%] md:max-w-[58.333333%] xl:min-w-[20%] p-4 rounded-md flex flex-col bg-cover bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-md bg-gray-700 bg-[url('https://cdn.kimkim.com/files/a/images/0b0d435f5312aaa4ac2deabb36ed3c23b3c363ba/original-90ebc1384d9012d5623e91bb03dc37aa.jpg')] ${isUpdated ? 'animate-scale' : ''}`}>
       <div className="flex flex-row justify-between gap-2">
         <Tooltip
           button={
@@ -64,8 +85,8 @@ function LinkCard({
             icon="fa-solid fa-heart"
             className={`text-2xl ${
               link.isFavorited ? "text-red-500" : "text-white"
-            }`}
-            onClick={() => onToggleFavorite(link.id, link.isFavorited)}
+            }`} // A prop onToggleFavorite foi removida daqui e centralizada em UrlItem
+            onClick={() => onToggleFavorite(link.id, link.isFavorited)} // This now correctly calls the prop
             title="Favoritar"
           />
 
@@ -95,6 +116,7 @@ function LinkCard({
               incrementShare(link.id);
             }}
             url={link.url}
+            onShowAlert={onShowAlert}
           />
 
           <ActionMenu
@@ -104,7 +126,8 @@ function LinkCard({
                 className="text-white text-2xl"
               />
             }
-            onAction={() => deleteLink(link.id)}
+
+            onAction={() => deleteLink(link)} // Passa o objeto link inteiro
           >
             <button title="Deletar">
               <SquareIcon
@@ -116,16 +139,7 @@ function LinkCard({
         </div>
       </div>
 
-      {/* modo escuro e claro, tem no gemini conversa sobre isso */}
-
-      {/* confirmar ao excluir */}
-      {/* use clickway, hoohk react que detecta clique fora o item em referencia */}
-
-      {/* m,enu de chat, feedback e nota */}
-      {/* serviços google analytics e outros */}
-      <div className="flex flex-row justify-between items-end gap-2 flex-grow">
-        <div className="flex flex-col justify-between items-start gap-2 flex-grow">
-          <div className="flex flex-row justify-between items-center flex-wrap gap-2 flex-grow">
+      <div className="md:max-w-[calc(50dvw-7.0621rem)] xl:max-w-[calc(40dvw-13.0621rem)] flex flex-row justify-start items-center flex-wrap gap-2 flex-grow">
             {link.tags && link.tags.length > 0 ? (
               <SquareIcon
                 icon="fa-solid fa-tags"
@@ -152,13 +166,23 @@ function LinkCard({
                 ))
               : ""}
           </div>
+      {/* modo escuro e claro, tem no gemini conversa sobre isso */}
 
-          <div
-            className="text-lg text-white flex flex-row items-center justify-between content-center align-center gap-1 w-fit cursor-pointer"
-            onClick={handleCopy}
+      {/* confirmar ao excluir */}
+      {/* use clickway, hoohk react que detecta clique fora o item em referencia */}
+
+      {/* m,enu de chat, feedback e nota */}
+      {/* serviços google analytics e outros */}
+      <div className="flex flex-row justify-between items-end gap-2 flex-grow">
+        <div className="md:max-w-[calc(50dvw-7.0621rem)] xl:max-w-[calc(40dvw-13.0621rem)] flex flex-col justify-between items-start gap-2 flex-grow">
+          
+
+           <div
+            className=" flex-grow flex-shrink text-lg text-white flex flex-row items-center justify-between content-center align-center gap-1 cursor-pointer"
+              onClick={handleCopy}
           >
             {/* <p className="text-blue-700 text-white underline cursor-pointer text-lg truncate max-w-150"> */}
-            <p className="text-white underline cursor-pointer text-lg max-w-150 break-all">
+            <p className="flex-grow flex-shrink text-white underline cursor-pointer line-clamp-3 text-lg max-w-150 break-all text-ellipsis">
               {link.url}
             </p>
 
@@ -174,9 +198,8 @@ function LinkCard({
             )}
           </div>
 
-          <div className="overflow-hidden">
             {/* css container + clamp + uselayouteffect + flexbasis (resize observer e offset top + calc) */}
-            <p className="text-white max-w-150 text-md line-clamp-3 break-words text-ellipsis">
+            <p className="text-white flex-grow flex-shrink basis-auto text-md line-clamp-5 break-words text-ellipsis">
               {link.description ? (
                 link.description
               ) : (
@@ -184,7 +207,7 @@ function LinkCard({
                 // <i className="fa-solid fa-ellipsis text-white text-md"></i>
               )}
             </p>
-          </div>
+
         </div>
 
         {/* quando for pra web fazer login pra receber favorito de outras pessoas, area privada e area publica por perfil */}
@@ -202,8 +225,24 @@ function LinkCard({
 
 const MemoizedLinkCard = React.memo(LinkCard);
 
-function UrlItem({ saveUrlRef, onEditClick }) {
-  const {
+function UrlItem({ saveUrlRef, onEditClick, onShowAlert, onShowConfirmation }) {
+
+  // Estado para armazenar tanto a query quanto o critério único
+  const [searchParams, setSearchParams] = React.useState({
+    query: '',
+    criterion: 'link' // Critério padrão
+});
+
+  // Função que recebe os dados do componente SearchBar
+  // Usamos React.useCallback para memoizar a função handleSearch.
+  // Isso evita que uma nova função seja criada a cada renderização de UrlItem,
+  // o que por sua vez impede que o useEffect dentro de SearchBar seja acionado desnecessariamente.
+  const handleSearch = React.useCallback((params) => {
+    setSearchParams(params);
+    console.log("Filtros atualizados:", params);
+  }, []); // O array de dependências está vazio porque setSearchParams é estável.
+
+ const {
     links,
     deleteLink,
     toggleFavorite,
@@ -212,7 +251,17 @@ function UrlItem({ saveUrlRef, onEditClick }) {
     incrementAccess,
     incrementCopy,
     removeTagFromLink,
+    clearLinkUpdateFlag, // <-- Pega a nova função do contexto
   } = React.useContext(LinksContext);
+
+  // Obtém todas as tags únicas dos links para usar nas sugestões.
+  // Esta lógica DEVE vir DEPOIS de obter 'links' do contexto.
+  const availableTags = React.useMemo(() => {
+    if (!links) return [];
+    const tags = new Set(links.flatMap(link => link.tags || []));
+    return Array.from(tags);
+  }, [links]);
+
   const [isLoading, setIsLoading] = React.useState(true);
   const prevLinksCount = React.useRef(undefined);
 
@@ -241,9 +290,8 @@ function UrlItem({ saveUrlRef, onEditClick }) {
   }, [links]);
 
   const LoadingSpinner = () => (
-    <section className="flex flex-col items-center justify-center gap-4 py-8 px-8 animate-fade-in">
+    <section className="flex flex-col items-center justify-center gap-4 animate-fade-in">
       <div className="flex flex-col items-center gap-4">
-        <div className="relative">
           <div className="animate-spin rounded-full h-12 w-12 border-4 border-gray-200"></div>
           <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent absolute top-0 left-0"></div>
         </div>
@@ -251,7 +299,6 @@ function UrlItem({ saveUrlRef, onEditClick }) {
           <p className="text-gray-600 text-sm font-medium">
             Carregando links...
           </p>
-          <div className="flex gap-1">
             <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
             <div
               className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"
@@ -261,9 +308,7 @@ function UrlItem({ saveUrlRef, onEditClick }) {
               className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"
               style={{ animationDelay: "0.2s" }}
             ></div>
-          </div>
         </div>
-      </div>
     </section>
   );
 
@@ -274,13 +319,12 @@ function UrlItem({ saveUrlRef, onEditClick }) {
       }
     };
     return (
-      <section className="flex flex-col items-center justify-center gap-4 py-8 px-8 animate-fade-in">
-        <div className="flex flex-col items-center gap-6 text-center">
-          <div className="relative">
+      <section className="flex flex-col items-center justify-center gap-4 animate-fade-in">
+        <div className="flex flex-col items-center gap-4 text-center relative">
             <i className="fa-solid fa-bookmark text-6xl text-gray-300 animate-pulse"></i>
             <div className="absolute -top-2 -right-2 w-4 h-4 bg-blue-500 rounded-full animate-ping"></div>
           </div>
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col items-center gap-2">
             <h3 className="text-xl font-semibold text-gray-700">
               Nenhum <span className="underline">Link</span> salvo ainda
             </h3>
@@ -296,7 +340,6 @@ function UrlItem({ saveUrlRef, onEditClick }) {
             <i className="fa-solid fa-arrow-up"></i>
             <span>Adicione seu primeiro</span>
           </button>
-        </div>
       </section>
     );
   };
@@ -309,6 +352,64 @@ function UrlItem({ saveUrlRef, onEditClick }) {
     [toggleFavorite, updateFavoriteCount]
   );
 
+  const handleDeleteRequest = React.useCallback((linkToDelete) => {
+    onShowConfirmation({
+      title: "Confirmar Exclusão",
+      text: `Tem certeza que deseja excluir o link "${linkToDelete.url}"? Esta ação não pode ser desfeita.`,
+      onConfirm: () => {
+        deleteLink(linkToDelete.id);
+        onShowConfirmation(null); // Fecha o modal de confirmação
+      }
+    });
+  }, [deleteLink, onShowConfirmation]);
+
+  // Usamos React.useMemo para memoizar a lista de links filtrada.
+  // A filtragem só será re-executada se `links` ou `searchParams` mudarem.
+  // Isso é crucial para a performance, evitando re-cálculos em cada renderização.
+  const filteredLinks = React.useMemo(() => {
+    if (!links) return [];
+
+    const query = searchParams.query.toLowerCase().trim();
+    if (!query) {
+      return links; // Se não há busca, retorna todos os links
+    }
+
+    return links.filter(link => {
+      const { criterion } = searchParams;
+
+      switch (criterion) {
+        case 'link':
+          // Permite buscar por múltiplos termos na URL, separados por vírgula
+          const searchLinkTerms = query.split(',').map(t => t.trim()).filter(Boolean);
+          if (searchLinkTerms.length === 0) return false;
+          // Verifica se a URL do link inclui ALGUM dos termos pesquisados
+          return searchLinkTerms.some(term => link.url.toLowerCase().includes(term));
+        case 'description':
+          // Permite buscar por múltiplos termos na descrição, separados por vírgula
+          const searchDescTerms = query.split(',').map(t => t.trim()).filter(Boolean);
+          if (searchDescTerms.length === 0) return false;
+          // Verifica se a descrição do link inclui ALGUM dos termos pesquisados
+          return searchDescTerms.some(term => link.description?.toLowerCase().includes(term));
+        case 'tag':
+          // Permite buscar por múltiplas tags separadas por vírgula
+          const searchTags = query.split(',').map(t => t.trim()).filter(Boolean);
+          if (searchTags.length === 0) return false;
+          // Verifica se ALGUMA tag do link (linkTag) inclui ALGUM dos termos pesquisados (searchTag)
+          return link.tags?.some(linkTag => searchTags.some(searchTag => linkTag.toLowerCase().includes(searchTag)));
+        default:
+          return true;
+      }
+    });
+  }, [links, searchParams]); // Dependências do useMemo
+
+
+
+
+
+
+  // Variável para saber se a busca não retornou resultados
+  const hasNoResults = filteredLinks.length === 0 && searchParams.query.length > 0;
+
   if (isLoading) {
     return <LoadingSpinner />;
   }
@@ -317,9 +418,22 @@ function UrlItem({ saveUrlRef, onEditClick }) {
     return <EmptyState />;
   }
 
+  // Componente para quando a busca não encontra resultados
+  const NoResults = () => (
+    <div className="w-full text-center animate-fade-in">
+      <i className="fa-solid fa-search text-4xl text-gray-400 mb-4"></i>
+      <h3 className="text-lg font-semibold text-gray-700">Nenhum resultado encontrado</h3>
+      <p className="text-sm text-gray-500">
+        Tente ajustar seus termos de busca para o critério de{' '}
+        <span className="font-bold">{searchParams.criterion}</span> ou limpe a busca para ver
+        todos os links.
+      </p>
+    </div>
+  );
+
   return (
-    <section className="flex flex-col items-start justify-between content-between align-center gap-4 py-4 px-8 space-y-4 dark:text-gray-200">
-      <div className="flex flex-row items-center content-center align-center justify-between gap-4 w-full box-shadow-md">
+    <section className="flex flex-col items-start justify-start content-between align-center gap-4 dark:text-gray-200 flex-grow">
+       <div className="flex flex-row items-center content-center align-center justify-between gap-4 w-full box-shadow-md">
         <h2 className="text-xl font-bold">Links salvos</h2>
         <div className="flex flex-row items-center content-center align-center justify-center gap-2">
           <LinkCounter />
@@ -328,26 +442,41 @@ function UrlItem({ saveUrlRef, onEditClick }) {
         </div>
       </div>
 
+      <div className="w-full">
+       <SearchBar onSearch={handleSearch} hasError={hasNoResults} availableTags={availableTags} />
+        {/* Dica contextual para busca múltipla */}
+        {searchParams.query && (
+          <p className="text-xs text-gray-500 mt-1 text-center animate-fade-in">
+            Para buscar múltiplos {searchParams.criterion === 'tag' ? 'tags' : 'termos'}, separe-os por vírgula.
+          </p>
+        )}
+      </div>
+
       {/* <div className="w-full flex flex-row items-center justify-end">
         <i className="fa-solid fa-a"></i>
       </div> */}
 
-      <div className="flex flex-row flex-wrap justify-between items-stretch gap-2 w-full">
-        {links.map((link) => (
+      <div className="flex flex-row flex-wrap justify-start items-stretch gap-2 w-full">
+        {filteredLinks.length > 0 ? (
+          filteredLinks.map((link) => (
           <MemoizedLinkCard
-            key={link.id}
+            key={link.id} // A key está aqui, corretamente identificando cada card
             link={link}
-            onToggleFavorite={handleToggleFavorite}
-            deleteLink={deleteLink}
+            onToggleFavorite={handleToggleFavorite} // Passando o callback memoizado
+            deleteLink={handleDeleteRequest} // Passando o handler que abre o modal
             incrementShare={incrementShare}
-            toggleFavorite={toggleFavorite}
             incrementAccess={incrementAccess}
             incrementCopy={incrementCopy}
             removeTagFromLink={removeTagFromLink}
+            clearLinkUpdateFlag={clearLinkUpdateFlag} // <-- Passa a função para o card
+            onShowAlert={onShowAlert}
             onEditClick={onEditClick}
           />
-        ))}
+          ))
+        ) : (
+          <NoResults />
+        )}
       </div>
     </section>
-  );
+    );
 }

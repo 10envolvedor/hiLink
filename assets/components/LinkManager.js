@@ -47,7 +47,10 @@ function LinkManager({ initialUrl, onSave, onCancel, linkToEdit, onShowAlert }) 
       });
       return;
     }
-    const tagsArray = formState.tags.split(',').map(tag => tag.trim()).filter(Boolean);
+    // Divide as tags, remove espaços, filtra vazios e usa um Set para garantir que sejam únicas.
+    const tagsArray = [...new Set(
+      formState.tags.split(',').map(tag => tag.trim()).filter(Boolean)
+    )];
     
     const linkData = {
       url: formState.url,
@@ -58,7 +61,7 @@ function LinkManager({ initialUrl, onSave, onCancel, linkToEdit, onShowAlert }) 
     try {
       if (isEditMode) {
         // No modo de edição, chamamos updateLink
-        await updateLink(linkToEdit.id, linkData);
+        await updateLink(linkToEdit.id, { ...linkData, isUpdated: true });
       } else {
         // No modo de criação, chamamos addLink com o objeto completo
         const newLink = {

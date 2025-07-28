@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Política de Privacidade - hiLink</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/icon/hiLink.png">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Istok+Web:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS (usando CDN para esta página estática) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body class="bg-white dark:bg-gray-900 font-['Istok_Web'] text-gray-800 dark:text-gray-200">
+    <div class="max-w-[1024px] xl:w-[80dvw] xl:max-w-[1344px] flex flex-col min-h-screen mx-auto gap-8 py-4 px-8">
+        
+        <header class="w-full flex flex-row justify-between items-center gap-4 pt-6">
+            <a href="index.html" class="flex flex-col items-center font-black text-2xl text-gray-800 dark:text-white no-underline">
+                <img src="assets/icon/hiLink.png" title="Voltar para o início" alt="hiLink Logotipo" class="h-16 w-16">
+                hiLink
+            </a>
+            <a href="index.html" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+                <i class="fa-solid fa-arrow-left mr-2"></i>Voltar ao App
+            </a>
+        </header>
+
+        <main class="w-full h-full flex flex-col flex-grow gap-8">
+            <div class="font-sans leading-relaxed max-w-4xl mx-auto my-5 p-8 rounded-lg bg-slate-50 dark:bg-gray-800 text-slate-700 dark:text-slate-300 shadow-md">
+                
+                <h1 class="text-slate-900 dark:text-white text-3xl font-bold mb-6 text-center">Política de Privacidade</h1>
+                <p id="last-updated" class="text-center text-sm text-slate-500 dark:text-slate-400 mb-8"></p>
+
+                <!-- Seção Política de Privacidade -->
+                <section id="privacy-policy" class="mb-12">
+                    <h2 class="text-2xl font-semibold text-slate-800 dark:text-slate-200 border-b-2 border-blue-500 pb-2 mb-4">Política de Privacidade</h2>
+                    <p class="mb-4">Sua privacidade é a nossa prioridade número um. O hiLink foi projetado desde o início com o princípio de que seus dados pertencem a você. Abaixo, detalhamos como lidamos com suas informações.</p>
+
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-slate-800 dark:text-slate-200">1. Coleta e Armazenamento de Dados</h3>
+                    <ul class="list-disc list-inside space-y-2 mb-4">
+                        <li><strong>Dados dos Links:</strong> Todos os links, descrições, tags e contadores associados são armazenados exclusivamente no seu navegador, usando o armazenamento interno do próprio navegador. Nós não temos acesso, não coletamos e não armazenamos esses dados em nenhum servidor externo. A segurança desses dados depende da segurança do seu próprio dispositivo e navegador.</li>
+                        <li><strong>Preferências do Usuário (LocalStorage):</strong> Utilizamos o armazenamento local do navegador (LocalStorage) para salvar pequenas informações que melhoram sua experiência, como o tema visual (claro/escuro) e a sua preferência sobre exibir ou não a mensagem de boas-vindas.</li>
+                    </ul>
+
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-slate-800 dark:text-slate-200">2. Integração com o Google Drive</h3>
+                    <ul class="list-disc list-inside space-y-2 mb-4">
+                        <li><strong>Funcionalidade de Backup e Restauração:</strong> Para sua conveniência, oferecemos a opção de fazer backup e restaurar seus dados usando sua conta do Google Drive.</li>
+                        <li><strong>Escopo de Permissão:</strong> Ao conectar sua conta, o hiLink solicita permissão para acessar a <strong>"Pasta de Dados de Aplicativos"</strong>. Este é um espaço especial e oculto no seu Google Drive que só pode ser acessado pelo nosso aplicativo. Nós <strong>não temos permissão</strong> para ver, modificar ou excluir nenhum outro arquivo ou pasta no seu Drive.</li>
+                        <li><strong>Uso dos Dados:</strong> A integração é usada unicamente para salvar e ler arquivos de backup gerados pelo hiLink. Você tem controle total sobre quando criar ou restaurar um backup.</li>
+                    </ul>
+
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-slate-800 dark:text-slate-200">3. Cookies</h3>
+                    <p class="mb-4">O hiLink não utiliza cookies de rastreamento ou de publicidade. O uso do LocalStorage é estritamente para funcionalidades essenciais do aplicativo, conforme descrito acima.</p>
+                </section>
+            </div>
+        </main>
+
+        <footer class="flex flex-col items-center justify-center text-center gap-2 py-4">
+            <p>Copyright © The Oficial Hub <span id="year"></span></p>
+            <a href="index.html" class="text-sm text-blue-500 hover:underline">Voltar para o aplicativo</a>
+        </footer>
+
+    </div>
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+        document.getElementById('last-updated').textContent = `Última atualização: ${new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}`;
+
+        // Script para aplicar o tema (claro/escuro) de forma consistente com o app principal
+        (function() {
+            try {
+                const theme = localStorage.getItem('theme') || 'system';
+                const root = document.documentElement;
+                const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                root.classList.remove(isDark ? 'light' : 'dark');
+                root.classList.add(isDark ? 'dark' : 'light');
+            } catch (e) {
+                console.error("Falha ao aplicar o tema:", e);
+            }
+        })();
+    </script>
+</body>
+</html>

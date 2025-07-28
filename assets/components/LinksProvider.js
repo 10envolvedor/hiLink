@@ -48,11 +48,12 @@ function LinksProvider({ children }) {
     await db.links.update(id, { isFavorited: !currentStatus });
     // Atualiza o estado local para a UI refletir a mudança
     setLinks((prevLinks) =>
-      prevLinks.map((link) =>
-        link.id === id
-          ? { ...link, isFavorited: !currentStatus }
-          : link // mantém referência original!
-      )
+        prevLinks.map(link => {
+          if (link.id === id) {
+            return { ...link, isFavorited: !currentStatus };
+          }
+          return link;
+        })
     );
   };
 
@@ -138,6 +139,18 @@ function LinksProvider({ children }) {
     );
   };
 
+  // Função para limpar a flag de 'atualizado' de um link
+  // Isso evita que a animação de destaque seja reativada em re-renderizações.
+  const clearLinkUpdateFlag = (id) => {
+    setLinks(prevLinks =>
+      prevLinks.map(link =>
+        (link.id === id && link.isUpdated)
+          ? { ...link, isUpdated: false }
+          : link
+      )
+    );
+  };
+
   // Agrupamos tudo que queremos compartilhar em um único objeto
   const contextValue = {
     links,
@@ -150,6 +163,7 @@ function LinksProvider({ children }) {
     incrementAccess, // <-- adicionado
     incrementCopy, // <-- adicionado
     removeTagFromLink, // <-- adicionado
+    clearLinkUpdateFlag, // <-- adicionado
     // Você pode adicionar outras funções aqui, como toggleFavorite, etc.
   };
 

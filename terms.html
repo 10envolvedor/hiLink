@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Termos de Serviço - hiLink</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/icon/hiLink.png">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Istok+Web:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS (usando CDN para esta página estática) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="bg-white dark:bg-gray-900 font-['Istok_Web'] text-gray-800 dark:text-gray-200">
+    <div class="max-w-[1024px] xl:w-[80dvw] xl:max-w-[1344px] flex flex-col min-h-screen mx-auto gap-8 py-4 px-8">
+        
+        <header class="w-full flex flex-row justify-between items-center gap-4 pt-6">
+            <a href="index.html" class="flex flex-col items-center font-black text-2xl text-gray-800 dark:text-white no-underline">
+                <img src="assets/icon/hiLink.png" title="Voltar para o início" alt="hiLink Logotipo" class="h-16 w-16">
+                hiLink
+            </a>
+            <a href="index.html" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+                <i class="fa-solid fa-arrow-left mr-2"></i>Voltar ao App
+            </a>
+        </header>
+
+        <main class="w-full h-full flex flex-col flex-grow gap-8">
+            <div class="font-sans leading-relaxed max-w-4xl mx-auto my-5 p-8 rounded-lg bg-slate-50 dark:bg-gray-800 text-slate-700 dark:text-slate-300 shadow-md">
+                
+                <h1 class="text-slate-900 dark:text-white text-3xl font-bold mb-6 text-center">Termos de Serviço</h1>
+                <p id="last-updated" class="text-center text-sm text-slate-500 dark:text-slate-400 mb-8"></p>
+
+                <!-- Seção Termos de Serviço -->
+                <section id="terms-of-service">
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-slate-800 dark:text-slate-200">1. Aceitação dos Termos</h3>
+                    <p class="mb-4">Ao utilizar o aplicativo hiLink, você concorda em cumprir estes Termos de Serviço. Se você não concorda com qualquer parte dos termos, não deve utilizar o serviço.</p>
+
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-slate-800 dark:text-slate-200">2. Responsabilidade do Usuário</h3>
+                    <ul class="list-disc list-inside space-y-2 mb-4">
+                        <li>Você é o único responsável por todos os dados que salva no hiLink.</li>
+                        <li>Como os dados são armazenados localmente, a perda do acesso ao navegador ou a limpeza dos dados do site resultará na perda de seus links.</li>
+                        <li>É sua responsabilidade utilizar a função de backup para proteger seus dados contra perdas acidentais. Recomendamos a realização de backups regulares.</li>
+                    </ul>
+
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-slate-800 dark:text-slate-200">3. Limitação de Responsabilidade</h3>
+                    <p class="mb-4">O hiLink é fornecido "como está", sem garantias de qualquer tipo. Em nenhuma circunstância os desenvolvedores do hiLink serão responsáveis por qualquer perda de dados, lucros cessantes ou qualquer outro dano resultante do uso ou da incapacidade de usar este serviço.</p>
+
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-slate-800 dark:text-slate-200">4. Modificações nos Termos</h3>
+                    <p class="mb-4">Reservamo-nos o direito de modificar estes termos a qualquer momento. Notificaremos sobre quaisquer alterações, atualizando a data da "Última atualização" no topo desta página. O uso continuado do serviço após tais alterações constitui sua aceitação dos novos termos.</p>
+                </section>
+
+            </div>
+        </main>
+
+        <footer class="flex flex-col items-center justify-center text-center gap-2 py-4">
+            <p>Copyright © The Oficial Hub <span id="year"></span></p>
+            <a href="index.html" class="text-sm text-blue-500 hover:underline">Voltar para o aplicativo</a>
+        </footer>
+
+    </div>
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+        document.getElementById('last-updated').textContent = `Última atualização: ${new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}`;
+
+        // Script para aplicar o tema (claro/escuro) de forma consistente com o app principal
+        (function() {
+            try {
+                const theme = localStorage.getItem('theme') || 'system';
+                const root = document.documentElement;
+                const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                root.classList.remove(isDark ? 'light' : 'dark');
+                root.classList.add(isDark ? 'dark' : 'light');
+            } catch (e) {
+                console.error("Falha ao aplicar o tema:", e);
+            }
+        })();
+    </script>
+</body>
+</html>

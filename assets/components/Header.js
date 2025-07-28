@@ -1,40 +1,88 @@
 function Header() {
-  const { isSignedIn, signIn, signOut, backupToDrive, restoreFromDrive, isLoading } = useGoogleDrive();
-
+  const {
+    isSignedIn,
+    signIn,
+    signOut,
+    backupToDrive,
+    restoreFromDrive,
+    isLoading,
+  } = useGoogleDrive();
 
   return (
-    <header className="dark:bg-gray-800 pt-6 pb-4 px-8 flex flex-row flex-nowrap justify-between items-center">
-      <div className="flex flex-row items-center content-center align-center justify-center gap-4">
-        <h1 className="flex flex-col justify-between items-center text-2xl font-bold dark:text-white"><img src="assets/icon/hiLink.png" alt="hiLink Logo" className="w-16 h-16" /> hiLink</h1>
-        <h2 className="text-gray-600 dark:text-gray-300 hidden md:block">Salve e tenha em mãos os <span className="underline">Links</span> que mais te importam.</h2>
-      </div>
+    <header className="w-full flex flex-row max-[320px]:flex-col justify-between items-center gap-4 pt-6">
+      <h1 className="flex flex-col items-center font-black text-2xl">
+        <img
+          src="assets/icon/hiLink.png"
+          title="Nosso logotipo oficial"
+          alt="hiLink Logotipo"
+          className="h-16 w-16"
+        />
+        hiLink
+      </h1>
 
-      <div className="flex items-center gap-4">
-        {isLoading && <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>}
-        
-        {isSignedIn ? (
-          <>
-            <Button onClick={backupToDrive} disabled={isLoading} title="Salvar backup no Google Drive">
-              <i className="fa-solid fa-cloud-arrow-up mr-2"></i>
-              Backup
-            </Button>
-            <Button onClick={restoreFromDrive} disabled={isLoading} title="Restaurar a partir de um backup">
-              <i className="fa-solid fa-cloud-arrow-down mr-2"></i>
-              Restaurar
-            </Button>
-            <Button onClick={signOut} disabled={isLoading}>
-              <i className="fa-brands fa-google mr-2"></i>
-              Sair
-            </Button>
-          </>
-        ) : (
-          <Button onClick={signIn} disabled={isLoading}>
-            <i className="fa-brands fa-google mr-2"></i>
-            Login com Google
-          </Button>
-        )}
+      <div className="w-full flex flex-col md:flex-row justify-end md:justify-between item-start md:items-center gap-2">
+        <h2 className="text-gray-600 text-end max-[320px]:text-center">
+          Salve e consulte seus <span className="font-black">Links</span> mais
+          importantes.
+        </h2>
 
-        {/* <ThemeToggler /> */}
+        <nav className="flex items-center max-[320px]:justify-center">
+          {isLoading && (
+            <span className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></span>
+          )}
+
+          {isSignedIn ? (
+            <ul className="flex flex-row justify-end max-[320px]:justify-center items-center gap-4">
+              <li>
+                <Button
+                  className="flex flex-col md:flex-row items-center gap-1"
+                  onClick={backupToDrive}
+                  disabled={isLoading}
+                  title="Salvar backup no Drive"
+                >
+                  <SquareIcon icon="fa-solid fa-cloud-arrow-up" />
+                  Backup
+                </Button>
+              </li>
+              <li>
+                <Button
+                  className="flex flex-col md:flex-row items-center gap-1"
+                  onClick={restoreFromDrive}
+                  disabled={isLoading}
+                  title="Restaurar a partir de um backup no Drive"
+                >
+                  <SquareIcon icon="fa-solid fa-cloud-arrow-down" />
+                  Restaurar
+                </Button>
+              </li>
+              <li>
+                <Button
+                  className="flex flex-col md:flex-row items-center gap-1"
+                  onClick={signOut}
+                  disabled={isLoading}
+                  title="Deslogar do Google"
+                >
+                  <SquareIcon icon="fa-brands fa-google" />
+                  Logout
+                </Button>
+              </li>
+            </ul>
+          ) : (
+            <ul className="w-full flex flex-row justify-end max-[320px]:justify-center items-center gap-4">
+              <li>
+                <Button
+                  className="flex flex-row items-center gap-1"
+                  onClick={signIn}
+                  disabled={isLoading}
+                  title="Logar no Google"
+                >
+                  <SquareIcon icon="fa-brands fa-google" />
+                  Login com Google
+                </Button>
+              </li>
+            </ul>
+          )}
+        </nav>
       </div>
     </header>
   );

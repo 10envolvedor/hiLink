@@ -15,3 +15,5 @@ Thumbs.db
 # Diretórios de build (boa prática)
 /build/
 /dist/
+
+assets/components/adicionar

@@ -1,7 +1,8 @@
 // fazer barra de busca que possa encontrar tags e etc
 // outros icones do font awesome como por exemplo file e etc
 const SaveUrl = React.forwardRef((props, ref) => {
-  // adicionar botão de fala por voz 
+  const { onShowAlert } = props
+  // adicionar botão de fala por voz
   const { addLink, links } = React.useContext(LinksContext);
   const [urlValue, setUrlValue] = React.useState("");
   const [inputError, setInputError] = React.useState(false);
@@ -48,7 +49,6 @@ const SaveUrl = React.forwardRef((props, ref) => {
     }
   };
 
-
   // Checagem automática do clipboard a cada 1 segundo
   React.useEffect(() => {
     const interval = setInterval(() => {
@@ -83,9 +83,9 @@ const SaveUrl = React.forwardRef((props, ref) => {
       setUrlValue(text);
       if (inputRef.current) inputRef.current.focus();
     } else {
-      props.onShowAlert?.({
-        title: 'Link Inválido',
-        text: 'Não foi possível colar: o conteúdo da área de transferência não é um link válido (http/https). Copie um link e tente novamente.',
+      onShowAlert?.({
+        title: "Link Inválido",
+        text: "Não foi possível colar: o conteúdo da área de transferência não é um link válido (http/https). Copie um link e tente novamente.",
       });
     }
   };
@@ -99,9 +99,9 @@ const SaveUrl = React.forwardRef((props, ref) => {
     if (e) e.preventDefault();
     if (!urlValue || !isValidUrl(urlValue)) {
       setInputError(true);
-      props.onShowAlert?.({
-        title: 'URL Inválida',
-        text: 'Por favor, insira uma URL válida antes de salvar.'
+      onShowAlert?.({
+        title: "URL Inválida",
+        text: "Por favor, insira uma URL válida antes de salvar.",
       });
       return;
     }
@@ -120,14 +120,14 @@ const SaveUrl = React.forwardRef((props, ref) => {
         setUrlValue("");
       })
       .catch((error) => {
-        console.error(
+        console.warn(
           "Erro ao adicionar link (provavelmente URL duplicada):",
           error
         );
-        props.onShowAlert?.({
-          title: 'Erro ao Salvar',
-          text: 'Não foi possível adicionar o link. A URL já pode existir.',
-        });
+        onShowAlert?.({
+          title: "Erro ao Salvar",
+          text: "Não foi possível adicionar o link. A URL já pode existir.",
+        }, 5000);
       });
   };
 
@@ -141,103 +141,128 @@ const SaveUrl = React.forwardRef((props, ref) => {
   React.useImperativeHandle(ref, () => ({
     focusInput,
     setUrl: (value) => setUrlValue(value),
-    clearUrl: () => setUrlValue("")
+    clearUrl: () => setUrlValue(""),
   }));
 
   return (
     // nao valida a regex quando salva pelo botao
-    <section className="gap-4 py-4 px-8">
+    <section className="gap-4">
       <form
         onSubmit={handleAddLink}
         className="flex flex-col items-start justify-between w-full"
         autoComplete="off"
       >
-        <div className="flex flex-row items-end justify-between w-full">
-        <div className="flex flex-col items-start w-1/2">
-          <label htmlFor="urlInput" className="text-left">
-            Url:
-            {props.required && <span className="text-red-500">*</span>}
-          </label>
-          <div className="flex flex-row items-center gap-2 w-full">
-            <input
-              ref={inputRef}
-              id="urlInput"
-              type="text"
-              placeholder="ex: https://theoficialhub.com"
-              pattern="https?://.+\..+"
-              title="Include http://"
-              className={`p-2 flex-grow ring ring-gray-300 rounded-md border-gray-300 ring-opacity-50 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 placeholder:text-gray-400 ${inputError ? 'border-red-500 ring-red-400' : ''}`}
-              required
-              name="url"
-              value={urlValue}
-              onChange={e => {
-                setUrlValue(e.target.value);
-                if (inputError) setInputError(false);
-              }}
-              onBlur={handleInputBlur}
-              autoComplete="off"
-            />
-            
-            {urlValue && (<SquareIcon
-                icon="fa-solid fa-trash-can"
-                onClick={clearUrl}
-                title="Limpar campo de URL"
-            />)}
-            {canPaste && !urlValue && (
-              <SquareIcon
-                icon="fa-solid fa-paste"
-                onClick={handlePasteClick}
-                title="Colar link da área de transferência"
+        <div className="flex flex-col md:flex-row items-start md:items-end justify-between w-full gap-2 md:gap-4">
+          <div className="flex flex-col items-start w-full md:w-1/2">
+            <label htmlFor="urlInput" className="text-left">
+              Url:
+              {props.required && <span className="text-red-500">*</span>}
+            </label>
+            <div className="relative w-full flex items-center text-gray-400 focus-within:text-gray-600">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <i className="fa-solid fa-link"></i>
+              </div>
+              <input
+                ref={inputRef}
+                id="urlInput"
+                type="text"
+                placeholder="ex: https://theoficialhub.com"
+                pattern="https?://.+\..+"
+                title="Include http://"
+                className={`p-2 pl-10 pr-12 w-full ring ring-gray-300 rounded-md border border-transparent ring-opacity-50 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 placeholder:text-gray-400 ${
+                  inputError ? "border-red-500 ring-red-400" : ""
+                }`}
+                required
+                name="url"
+                value={urlValue}
+                onChange={(e) => {
+                  setUrlValue(e.target.value);
+                  if (inputError) setInputError(false);
+                }}
+                onBlur={handleInputBlur}
+                autoComplete="off"
               />
-            )}
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                {urlValue && (
+                  <SquareIcon
+                    icon="fa-solid fa-trash-can"
+                    onClick={clearUrl}
+                    title="Limpar campo de URL"
+                    className="cursor-pointer text-gray-500 hover:text-gray-700"
+                  />
+                )}
+                {canPaste && !urlValue && (
+                  <SquareIcon
+                    icon="fa-solid fa-paste"
+                    onClick={handlePasteClick}
+                    title="Colar link da área de transferência"
+                    className="cursor-pointer text-gray-500 hover:text-gray-700"
+                  />
+                )}
+              </div>
+            </div>
           </div>
-        </div>
-        
-        <div className="flex flex-col items-center w-1/2">
-          <p className="mb-3">Salvamento</p>
-          <div className="flex flex-row w-full">
 
-{/* on haserror block to */}
-{/* adiconar cursor block enquanto não tiver anda salvo no input */}
-            <Button className="flex flex-grow items-center content-center align-center justify-center py-2 px-4 gap-2" onClick={handleAddLink}>
+            {/* Mensagem de erro agora aparece após a div pai do input */}
+        {inputError && (
+          <span className="flex flex-col items-start block md:hidden w-full text-red-500 text-xs mt-1">
+            Insira uma URL válida para salvar.
+          </span>
+        )}
+
+          <div className="flex flex-col items-center w-full md:w-1/2 gap-1 md:gap-4">
+            <p className="self-start md:self-center md:block">Salvamento</p>
+
+            <div className="flex flex-row w-full">
+              {/* on haserror block to */}
+              {/* adiconar cursor block enquanto não tiver anda salvo no input */}
+              <Button
+                className="order-2 md:order-1 flex flex-grow items-center content-center align-center justify-center py-2 px-4 gap-2"
+                onClick={handleAddLink}
+              >
                 Rápido <SquareIcon icon="fa-solid fa-plus" />
-            </Button>
+              </Button>
 
+              <button
+                type="button"
+                className="order-1 md:order-2 flex flex-grow items-center justify-center bg-black hover:bg-dark-700 text-white py-2 px-4 rounded gap-2"
+                onClick={() => {
+                  if (!urlValue || !isValidUrl(urlValue)) {
+                    setInputError(true);
+                    props.onShowAlert?.({
+                      title: "URL Inválida",
+                      text: "Por favor, insira uma URL válida antes de abrir o modo detalhado.",
+                    });
+                    return;
+                  }
+                  // Validação para checar se o link já existe ANTES de abrir o modal
+                  const linkExists = links?.some(
+                    (link) => link.url === urlValue
+                  );
+                  if (linkExists || linkExists === 0) {
+                    props.onShowAlert?.({
+                      title: "Link já existe",
+                      text: "Este link já foi salvo. Você pode editá-lo na lista abaixo.",
+                    });
+                    return;
+                  }
 
-            <button
-              type="button"
-              className="flex flex-grow items-center justify-center bg-black hover:bg-dark-700 text-white py-2 px-4 rounded gap-2"
-              onClick={() => {
-                if (!urlValue || !isValidUrl(urlValue)) {                  
-                  setInputError(true);
-                  props.onShowAlert?.({
-                    title: 'URL Inválida',
-                    text: 'Por favor, insira uma URL válida antes de abrir o modo detalhado.'
-                  });
-                  return;
-                }
-                // Validação para checar se o link já existe ANTES de abrir o modal
-                const linkExists = links?.some(link => link.url === urlValue);
-                if (linkExists) {
-                  props.onShowAlert?.({
-                    title: 'Link já existe',
-                    text: 'Este link já foi salvo. Você pode editá-lo na lista abaixo.'
-                  });
-                  return;
-                }
-
-                props.onDetalhadoClick?.(urlValue);
-              }}
-            >
-              Detalhado <i className="fa-solid fa-list"></i>
-            </button>
+                  props.onDetalhadoClick?.(urlValue);
+                }}
+              >
+                Detalhado <i className="fa-solid fa-list"></i>
+              </button>
+            </div>
           </div>
-        </div>
+
+        
         </div>
 
           {/* Mensagem de erro agora aparece após a div pai do input */}
-          {inputError && (
-          <span className="text-red-500 text-xs mt-1">Insira uma URL válida para salvar.</span>
+        {inputError && (
+          <span className="flex flex-col items-start w-full hidden md:block order-2 md:order-3 text-red-500 text-xs mt-1">
+            Insira uma URL válida para salvar.
+          </span>
         )}
       </form>
     </section>

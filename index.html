@@ -1,19 +1,17 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <!-- @todo mudar tudo de site pra link -->
-     <!-- @todo mudar tudo de url pra link -->
-
+    <!-- @todo mudar tudo de url pra link -->
     <title>hiLink</title>
 
     <link rel="icon" href="assets/icon/hiLink.png" />
 
     <!-- fazer seo -->
     <meta charset="UTF-8" />
-    <meta name="lan" content="Free Web tutorials">
-    <meta name="description" content="Free Web tutorials">
-  <meta name="keywords" content="HTML, CSS, JavaScript">
-  <meta name="author" content="John Doe">
+    <meta name="lan" content="Free Web tutorials" />
+    <meta name="description" content="Free Web tutorials" />
+    <meta name="keywords" content="HTML, CSS, JavaScript" />
+    <meta name="author" content="John Doe" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <link rel="stylesheet" href="css/default.css" />
@@ -52,8 +50,17 @@
     <script>
       // A única configuração necessária para o Tailwind é esta:
       tailwind.config = {
-        darkMode: 'class',
-      }
+        darkMode: "class",
+        // theme: {
+        //   extend: {
+        //     screens: {
+        //       xs: "475px", // Exemplo: um novo breakpoint 'xs'
+        //       "3xl": "1920px", // Exemplo: um novo breakpoint '3xl' para telas grandes
+        //       tablet: "768px", // Exemplo: um breakpoint com nome personalizado
+        //     },
+        //   },
+        // },
+      };
     </script>
 
     <script src="https://unpkg.com/@popperjs/core@2"></script>
@@ -63,14 +70,9 @@
     <link rel="stylesheet" href="css/popper.css" />
 
     <link rel="stylesheet" href="css/animations.css" />
-
-    
   </head>
+
   <body className="bg-white">
-    <!-- upvote e downvote -->
-
-    <!-- @todo fazer o primeiro aviso de que precisa usar no mesmobrowser, epois criar segmentação por conta, e fazer já integração com o drive -->
-
     <noscript>
       <p>Seu navegador não suporta JavaScript ou ele está desativado.</p>
     </noscript>
@@ -78,7 +80,6 @@
     <div id="root"></div>
 
     <!-- <script type="text/babel" src="assets/components/ThemeProvider.js"></script> -->
-    <script type="text/babel" src="assets/components/GoogleDriveProvider.js"></script>
     <script type="text/babel" src="assets/components/LinksProvider.js"></script>
 
     <script type="text/babel" src="assets/components/SquareIcon.js"></script>
@@ -95,12 +96,23 @@
     <script type="text/babel" src="assets/components/ActionMenu.js"></script>
     <script type="text/babel" src="assets/components/Tooltip.js"></script>
 
+    <script
+      type="text/babel"
+      src="assets/components/WelcomeMessage.js"
+    ></script>
+
+    <script
+      type="text/babel"
+      src="assets/components/GoogleDriveProvider.js"
+    ></script>
     <script type="text/babel" src="assets/components/MenuItem.js"></script>
     <script type="text/babel" src="assets/components/Header.js"></script>
 
     <script type="text/babel" src="assets/components/LinkManager.js"></script>
     <script type="text/babel" src="assets/components/SaveUrl.js"></script>
     <script type="text/babel" src="assets/components/LinkCounter.js"></script>
+    <script type="text/babel" src="assets/components/SearchBar.js"></script>
+
     <script type="text/babel" src="assets/components/UrlItem.js"></script>
     <script type="text/babel" src="assets/components/Main.js"></script>
 
@@ -111,17 +123,7 @@
     <script type="text/babel">
       const container = document.getElementById("root");
       const root = ReactDOM.createRoot(container);
-      root.render(<MyApp />);
+      root.render(<App />);
     </script>
-    <!--
-      Note: this page is a great way to try React but it's not suitable for production.
-      It slowly compiles JSX with Babel in the browser and uses a large development build of React.
-
-      Read this page for starting a new React project with JSX:
-      https://react.dev/learn/start-a-new-react-project
-
-      Read this page for adding React with JSX to an existing project:
-      https://react.dev/learn/add-react-to-an-existing-project
-    -->
   </body>
 </html>

@@ -1,4 +1,4 @@
-function ShareButton({ title, text, url, onSuccess }) {
+function ShareButton({ title, text, url, onSuccess, onShowAlert }) {
     // 1. Verifica se a Web Share API está disponível no navegador
     const isShareSupported = !!navigator.share;
   
@@ -23,7 +23,10 @@ function ShareButton({ title, text, url, onSuccess }) {
         }
       } else {
         // Fallback para navegadores que não suportam a API
-        alert("A API de compartilhamento não é suportada neste navegador.");
+        onShowAlert({
+          title: "Compartilhamento Indisponível",
+          text: "A função de compartilhamento nativo não é suportada neste navegador."
+        });
       }
     };
   

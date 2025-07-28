@@ -4,6 +4,8 @@ function Main() {
   const [urlForCreateModal, setUrlForCreateModal] = React.useState("");
   const [alertContent, setAlertContent] = React.useState(null);
   const [editingLink, setEditingLink] = React.useState(null); // Novo estado para o link em edição
+  const [showAlert, setShowAlert] = React.useState(null);
+  const [confirmation, setConfirmation] = React.useState(null);
 
   // Função para abrir o modal detalhado
   const handleOpenDetalhado = (url) => {
@@ -17,8 +19,16 @@ function Main() {
   };
 
   // Função para mostrar um alerta genérico
-  const showAlert = (content) => {
+  const showAlertMessage = (content) => {
     setAlertContent(content);
+  };
+
+  const triggerAlert = (content) => {
+    setShowAlert(content);
+  };
+
+  const triggerConfirmation = (content) => {
+    setConfirmation(content);
   };
 
   const closeAlert = () => {
@@ -37,16 +47,23 @@ function Main() {
   };
 
   return (
-    <main className="dark:bg-gray-900">
+    <main className="w-full h-full flex flex-col flex-grow gap-8">
+      <WelcomeMessage />
       <SaveUrl
         ref={saveUrlRef}
-        required={true}
+        required
         onDetalhadoClick={handleOpenDetalhado}
-        onShowAlert={showAlert}
+        onShowAlert={triggerAlert}
       />
-      <UrlItem saveUrlRef={saveUrlRef} onEditClick={handleOpenEdit} />
+      <UrlItem
+        saveUrlRef={saveUrlRef}
+        onEditClick={handleOpenEdit}
+        onShowAlert={triggerAlert}
+        onShowConfirmation={triggerConfirmation}
+      />
       {(showCreateModal || editingLink) && (
         <Modal onClose={() => handleCloseModal(false)}>
+
           <LinkManager
             linkToEdit={editingLink}
             initialUrl={urlForCreateModal}
@@ -56,7 +73,17 @@ function Main() {
           />
         </Modal>
       )}
-      {alertContent && <AlertModal content={alertContent} onClose={closeAlert} />}
+      {showAlert && (
+        <AlertModal content={showAlert} onClose={() => setShowAlert(null)} />
+      )}
+      {confirmation && (
+        <ConfirmationModal
+          content={confirmation}
+          onConfirm={confirmation.onConfirm}
+          onCancel={() => setConfirmation(null)}
+        />
+      )}
+
     </main>
   );
 }
@@ -71,7 +98,7 @@ function AlertModal({ content, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center z-60"
+      className="fixed inset-0 flex items-center justify-center z-60 p-4"
       style={{ backgroundColor: "rgba(0,0,0,0.7)" }}
     >
       <div
@@ -114,10 +141,10 @@ function Modal({ children, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center z-50"
+      className="fixed inset-0 flex items-center justify-center z-50 p-4"
       style={{ backgroundColor: "rgba(0,0,0,0.8)" }}
     >
-      <div ref={modalRef} className="bg-white dark:bg-gray-800 rounded-lg p-6 relative min-w-[350px] max-w-lg w-full">
+      <div ref={modalRef} className="bg-white dark:bg-gray-800 rounded-lg p-6 relative max-w-lg w-full max-h-[90vh] overflow-y-auto">
         <button onClick={() => onClose()} className="absolute top-2 right-2 text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white">
           <i className="fa-solid fa-xmark"></i>
         </button>
